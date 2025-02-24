@@ -16,7 +16,7 @@ import {
   useEdittodoMutation,
   useSingletodoMutation,
 } from "@/redux/slices/todoApiSlice";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { toast } from "sonner";
 
 export default function EditTask({ id }: { id: string }) {
