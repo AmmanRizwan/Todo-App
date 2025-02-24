@@ -63,7 +63,7 @@ export default function EditTask({ id }: { id: string }) {
         <DialogHeader>
           <DialogTitle>Edit Your Todo Task</DialogTitle>
           <DialogDescription>
-            Make changes to your task here. Click save when you're done.
+            Make changes to your task here. Click save when you&apos;re done.
           </DialogDescription>
         </DialogHeader>
         <div className="grid gap-4 py-4">
