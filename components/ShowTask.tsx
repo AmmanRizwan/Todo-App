@@ -10,41 +10,24 @@ import {
 } from "@/components/ui/table";
 import EditTask from "@/components/EditTask";
 import DeleteTask from "@/components/DeleteTask";
-import { useAlltodosMutation } from "@/redux/slices/todoApiSlice";
-import { useEffect, useState } from "react";
-import { toast } from "sonner";
+import { useQuery } from "@tanstack/react-query";
+import { getTodo } from "@/lib/fetchData/todoApi";
 import { TTodo } from "@/type";
 
 export default function ShowTask() {
-  const [data, setData] = useState<TTodo[]>([]);
-  const [alltodos] = useAlltodosMutation();
+  const { data: todos, isLoading } = useQuery({
+    queryFn: () => getTodo(),
+    queryKey: ["todos"],
+  });
 
-  const getData = async () => {
-    try {
-      const res = await alltodos({}).unwrap();
-      setData(res);
-      toast("Data Fetched From the Server!", {
-        description: "Getting Ready from the server side!",
-        action: {
-          label: "Close",
-          onClick: () => null,
-        },
-      });
-    } catch (err: any) {
-      toast("Failed to Fetching the data");
-    }
-  };
-
-  useEffect(() => {
-    getData();
-  }, []);
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <Table>
       <TableCaption>
-        {data.length < 1
-          ? "Try to add the task and organize in the list given table"
-          : "A list of your recent tasks that will have you to remind."}
+        A list of your recent tasks that will have you to remind.
       </TableCaption>
       <TableHeader>
         <TableRow>
@@ -55,16 +38,16 @@ export default function ShowTask() {
         </TableRow>
       </TableHeader>
       <TableBody>
-        {data.map((value, index) => {
+        {todos?.map((todo: TTodo, index: number) => {
           return (
             <TableRow key={index}>
               <TableCell className="font-medium">{index + 1}</TableCell>
-              <TableCell>{value.description}</TableCell>
+              <TableCell>{todo.description}</TableCell>
               <TableCell>
-                <EditTask id={value._id.toString()} />
+                <EditTask id={todo._id.toString()} />
               </TableCell>
               <TableCell className="text-right">
-                <DeleteTask id={value._id.toString()} />
+                <DeleteTask id={todo._id.toString()} />
               </TableCell>
             </TableRow>
           );

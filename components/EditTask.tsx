@@ -12,51 +12,39 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Edit } from "lucide-react";
-import {
-  useEdittodoMutation,
-  useSingletodoMutation,
-} from "@/redux/slices/todoApiSlice";
 import { useState } from "react";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { getSingleTodo, updateTodo } from "@/lib/fetchData/todoApi";
 import { toast } from "sonner";
 
 export default function EditTask({ id }: { id: string }) {
-  const [desc, setDesc] = useState("");
-  const [singletodo] = useSingletodoMutation();
-  const [edittodo] = useEdittodoMutation();
+  const queryClient = useQueryClient();
+  const [desc, setDesc] = useState<string>("");
 
-  const SingleValue = async (id: string) => {
-    try {
-      const res = await singletodo(id).unwrap();
-      setDesc(res.description);
-    } catch (err: any) {
-      toast(err.data.message);
-    }
-  };
+  const { mutateAsync: singleTodo } = useMutation({
+    mutationFn: getSingleTodo,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["todos"] });
+    },
+  });
 
-  const EditSumbit = async (id: string) => {
-    try {
-      const res = await edittodo({
-        id: id,
-        data: { description: desc },
-      }).unwrap();
-      toast(res.message, {
-        description: "The description is updated",
-        action: {
-          label: "Close",
-          onClick: () => null,
-        },
-      });
-    } catch (err: any) {
-      console.log(err);
-      toast(err.data.message);
-    }
-  };
+  const { mutateAsync: editTodo } = useMutation({
+    mutationFn: updateTodo,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["todos"] });
+    },
+  });
 
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button onClick={() => SingleValue(id)}>
-          <Edit className="w-[1.2rem] h-[1.2rem]" />
+        <Button
+          onClick={async () => {
+            const data = await singleTodo(id);
+            setDesc(data?.description);
+          }}
+        >
+          <Edit />
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
@@ -81,7 +69,13 @@ export default function EditTask({ id }: { id: string }) {
           <div className="grid grid-cols-4 items-center gap-4"></div>
         </div>
         <DialogFooter>
-          <Button type="submit" onClick={() => EditSumbit(id)}>
+          <Button
+            type="submit"
+            onClick={async () => {
+              const data = await editTodo({ id, data: { description: desc } });
+              toast(data?.message);
+            }}
+          >
             Save Changes
           </Button>
         </DialogFooter>

@@ -1,33 +1,30 @@
 "use client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { postTodo } from "@/lib/fetchData/todoApi";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
-import { useCreatetodoMutation } from "@/redux/slices/todoApiSlice";
 import { toast } from "sonner";
 
 export default function InputTask() {
+  const queryClient = useQueryClient();
+
   const [desc, setDesc] = useState<string>("");
-  const [createtodo] = useCreatetodoMutation();
 
-  const submitDesc = async () => {
-    try {
-      const res = await createtodo({ description: desc }).unwrap();
-      toast(res.message, {
-        description: "Adding the Description on the Screen",
-        action: {
-          label: "Close",
-          onClick: () => null,
-        },
-      });
-      setDesc("");
-    } catch (err: any) {
-      toast(err.data.message);
-    }
-  };
+  const { mutateAsync: addTodoMutation } = useMutation({
+    mutationFn: postTodo,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["todos"] });
+    },
+  });
 
-  const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+  const handleKeyDown = async (
+    event: React.KeyboardEvent<HTMLInputElement>
+  ) => {
     if (event.key === "Enter") {
-      submitDesc();
+      const data = await addTodoMutation({ description: desc });
+      toast(data?.message);
+      setDesc("");
     }
   };
 
@@ -39,7 +36,14 @@ export default function InputTask() {
         onChange={(e) => setDesc(e.target.value)}
         onKeyDown={handleKeyDown}
       />
-      <Button type="submit" onClick={() => submitDesc()}>
+      <Button
+        type="submit"
+        onClick={async () => {
+          const data = await addTodoMutation({ description: desc });
+          toast(data?.message);
+          setDesc("");
+        }}
+      >
         Submit
       </Button>
     </div>

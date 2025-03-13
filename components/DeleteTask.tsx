@@ -11,27 +11,20 @@ import {
   AlertDialogAction,
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
+import { deleteTodo } from "@/lib/fetchData/todoApi";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { DeleteIcon } from "lucide-react";
-import { useRemovetodoMutation } from "@/redux/slices/todoApiSlice";
 import { toast } from "sonner";
 
 export default function DeleteTask({ id }: { id: string }) {
-  const [removetodo] = useRemovetodoMutation();
+  const queryClient = useQueryClient();
 
-  const removeSubmit = async (id: string) => {
-    try {
-      const res = await removetodo(id).unwrap();
-      toast(res.message, {
-        description: "Proceesing to delete the description",
-        action: {
-          label: "Close",
-          onClick: () => null,
-        },
-      });
-    } catch (err: any) {
-      toast(err.data.message);
-    }
-  };
+  const { mutateAsync: removeTodo } = useMutation({
+    mutationFn: deleteTodo,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["todos"] });
+    },
+  });
 
   return (
     <AlertDialog>
@@ -50,7 +43,12 @@ export default function DeleteTask({ id }: { id: string }) {
         </AlertDialogHeader>
         <AlertDialogFooter>
           <AlertDialogCancel>Cancel</AlertDialogCancel>
-          <AlertDialogAction onClick={() => removeSubmit(id)}>
+          <AlertDialogAction
+            onClick={async () => {
+              const data = await removeTodo(id);
+              toast(data?.message);
+            }}
+          >
             Continue
           </AlertDialogAction>
         </AlertDialogFooter>
