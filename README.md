@@ -1,36 +1,28 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Todo App Documentation
 
-## Getting Started
+## Introduction
 
-First, run the development server:
+The TODO App is a simple task management application that allows users to create, read, update and delete (CRUD) tasks efficiently. Built with modern web technologies, it provides a user-friendly interface for managing daily tasks.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## Features
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+<ul style='font-size: 18px;'>  
+  <li>✅ Add New Tasks</li>
+  <li>🔍 Views all Tasks</li>
+  <li>📝 Edit Existing Tasks</li>
+  <li>❌ Delete Tasks</li>
+  <li>🎨 Responsive and Clear UI</li>
+</ul>
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Technology Stack
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+<ul style='font-size: 15px;'>  
+  <li><span style='font-weight: bold;'>Frontend</span>: NextJS-Client (with TypeScript), Tanstack Query (React Query), Tailwind CSS, Shadcn-UI</li>
+  <li><span style='font-weight: bold;'>Backend</span>: NextJS-Server (with TypeScript), fetch (Api Fetch)</li>
+  <li><span style='font-weight: bold;'>Database</span>: MongoDB</li>
+  <li><span style='font-weight: bold;'>Deployment</span>: Vercel (Backend and Frontend)</li>
+</ul>
 
-## Learn More
+## TODO App Image
 
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+<img src="./public/todo.png">

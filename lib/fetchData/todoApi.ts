@@ -1,5 +1,3 @@
-const URL: string = process.env.BASE_URL!;
-
 export const getTodo = async () => {
   const res = await fetch(`api/todos`);
   const result = await res.json();
