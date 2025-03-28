@@ -8,7 +8,7 @@ export async function GET() {
   try {
     await connectDB();
 
-    const todos = await Todo.find();
+    const todos = await Todo.find().sort({ createdAt: -1 });
 
     if (!todos) {
       return NextResponse.json(
